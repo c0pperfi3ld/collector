@@ -1,5 +1,6 @@
 {
 	"subfinder" : ["subfinder -d URL","subdomains.txt",1],
 	"httpx" : ["cat subdomains.txt | httpx -mc 200,301,302,403","active.txt",0],
-	"katana" : ["katana -u URL","active.txt",0]
+	"katana" : ["katana -u URL","active.txt",0],
+	"hakrawler" : ["echo URL | hakrawler -subs","hakrawler.txt",0]
 }
