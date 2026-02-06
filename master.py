@@ -26,6 +26,7 @@ vault = {
 		rather than doing automated have some flexibility
 			like give it room for customizing the commands, using pyautogui or some other libraries
 
+	🟠 make it class based rather than function
 	✅ go step by step
 	✅ run again
 	✅ try using different command add or remove, paste all in there do what has to be done
