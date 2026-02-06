@@ -1,7 +1,10 @@
 
 '''
 Kali Linux web automation tools for Bug Bounty
-color off
+the point of this tool is to automate the tasks that are generally done over and over again
+and are always true for same websites
+to catch the low hanging fruit
+
 '''
 
 import os, json, time
@@ -18,7 +21,17 @@ vault = {
 }
 
 '''dev notes
-	url extraction for specific tools
+	url extraction for katana and other specific tools
+	feroxbuster
+		rather than doing automated have some flexibility
+			like give it room for customizing the commands, using pyautogui or some other libraries
+
+	✅ go step by step
+	✅ run again
+	✅ try using different command add or remove, paste all in there do what has to be done
+	✅ add extra hurestics like pattern found, parameters, admin panel interesting items
+
+
 '''
 
 banner__ = '''
