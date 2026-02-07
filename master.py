@@ -9,7 +9,7 @@ to catch the low hanging fruit
 
 import os, json, time
 from rich import print
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 
 '''dev notes
@@ -35,10 +35,12 @@ class COLLECTOR:
 		self.prot_ = [] # 0 on - 1 off
 		self.dict_ = {}
 		self.dictKeys = []
+		self.group = defaultdict()
 		self.vault = {
 			'commands' : "../commands.json",
 			'master' : "../master.txt"
 		}
+
 		self.banner = f'''[b cyan]
 	     ██████╗ ██████╗ ██╗     ██╗     ███████╗ ██████╗████████╗ ██████╗ ██████╗ 
 	    ██╔════╝██╔═══██╗██║     ██║     ██╔════╝██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗
@@ -87,7 +89,13 @@ class COLLECTOR:
 		
 		self.dict_ = OrderedDict(self.readfile(self.vault['commands']))
 		# in order
-		for k in self.dict_.keys(): self.dictKeys.append(k) 
+		for k,v in self.dict_.items():
+			self.dictKeys.append(k)
+			try:
+				self.group[v[3]].append(v[1])
+			except KeyError:
+				self.group[v[3]] = []
+				self.group[v[3]].append(v[1])
 
 	"""
 	
@@ -121,11 +129,39 @@ class COLLECTOR:
 
 		os.system(fullString) # execute the command
 
-		return True
+	def writeFile(self, data, filename:str) -> None:
+		with open(filename, 'w+') as file__:
+			for d in data:
+				file__.write(d)
+				file__.write('\n')
+
 
 	def deleteEv(self) -> None:
 		os.system('rm -rf ./temp/*')
 		os.chdir("./temp")
+
+	def duplicateFinder(self) -> None:
+		keys__ = set()
+		num__ = 0
+		for k,v in self.group.items():
+			if k != 0:
+				num__ = k
+				for vv in v:
+					textFile = vv
+					file__ = self.readfile(vv)
+					for f__ in file__:
+						keys__.add(f__)
+				keys__ = list(keys__)
+				for kk_ in keys__:
+					print(f"{kk_}",end="\n")
+
+				newFileName = "".join(v)
+				self.writeFile(keys__, newFileName)
+
+				keys__.clear()
+				keys__ = set()
+
+
 
 	def main(self) -> None:
 		print(f"{self.banner}",end="\n")
@@ -134,14 +170,22 @@ class COLLECTOR:
 		print(f"{self.dictKeys}",end="\n")
 
 		for idx,item_ in enumerate(self.dictKeys, start=1):
-			print(f"[b green]Continue [Any Key / No (n/N)] ==> ",end="\n")
+			print(f"Should start [b magenta]{item_}[/]",end="\n")
+			print(f"[b green]Continue [Any Key / No (n/N)] / Skip (s) ==> ",end=" ")
 			prompt_ = input()
-			if prompt_ not in ("N",'n'):
-				x = self.loop_(idx,item_)
-				print(f"{x}",end="\n")
+			if prompt_.lower() == 's':
+				continue # skip the item
+			elif prompt_ not in ("N",'n'):
+
+				# main code goes here
+				self.loop_(idx,item_)
+
+				
 			else:
 				print(f"Thanks for using 👍",end="\n")
 				break
+
+		self.duplicateFinder()
 
 if __name__ == "__main__":
 	c = COLLECTOR()
