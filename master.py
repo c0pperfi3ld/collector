@@ -35,11 +35,13 @@ class COLLECTOR:
 		self.prot_ = [] # 0 on - 1 off
 		self.dict_ = {}
 		self.dictKeys = []
-		self.group = defaultdict()
+		self.folderName = 'temp'
+		self.group = defaultdict(list)
 		self.vault = {
 			'commands' : "../commands.json",
 			'master' : "../master.txt"
 		}
+		self.keys__ = set() # all the urls
 
 		self.banner = f'''[b cyan]
 	     ██████╗ ██████╗ ██╗     ██╗     ███████╗ ██████╗████████╗ ██████╗ ██████╗ 
@@ -91,11 +93,7 @@ class COLLECTOR:
 		# in order
 		for k,v in self.dict_.items():
 			self.dictKeys.append(k)
-			try:
-				self.group[v[3]].append(v[1])
-			except KeyError:
-				self.group[v[3]] = []
-				self.group[v[3]].append(v[1])
+			self.group[v[3]].append(v[1])
 
 	"""
 	
@@ -119,7 +117,6 @@ class COLLECTOR:
 		print(f"{self.prot_}",end="\n")
 		try: fixedCommand = command_.replace('URL',self.prot_[self.dict_[item_][2]])
 		except Exception as ex_:
-			#print(f"{ex_}",end="\n")
 			fixedCommand = command_
 
 		print(f"[b green]Running task => {idx}",end="\n")
@@ -141,7 +138,7 @@ class COLLECTOR:
 		os.chdir("./temp")
 
 	def duplicateFinder(self) -> None:
-		keys__ = set()
+		dups__ = defaultdict(int) # just number the urls
 		num__ = 0
 		for k,v in self.group.items():
 			if k != 0:
@@ -150,22 +147,43 @@ class COLLECTOR:
 					textFile = vv
 					file__ = self.readfile(vv)
 					for f__ in file__:
-						keys__.add(f__)
-				keys__ = list(keys__)
-				for kk_ in keys__:
+						self.keys__.add(f__)
+						if f__ in dups__:
+							dups__[f__]+=1
+						else:
+							dups__[f__] = 1
+
+				self.keys__ = list(self.keys__)
+				for kk_ in self.keys__:
 					print(f"{kk_}",end="\n")
 
-				newFileName = "".join(v)
-				self.writeFile(keys__, newFileName)
+				newFileName = "".join("".join(v).split('.txt')) + '.txt'
 
-				keys__.clear()
-				keys__ = set()
+				self.writeFile(self.keys__, newFileName)
+				print(f"{dups__}",end="\n")
+				print(f"{len(dups__)}",end="\n")
+
+				self.keys__.clear()
+				self.keys__ = set()
+	
+	def checkFolder(self, name:str) -> bool:
+		_allFolders = os.listdir(os.getcwd())
+		__flag = False
+		for __a in _allFolders:
+			if __a == self.folderName:
+				print(f"[b red]Folder found ! Skipping folder creation ...",end="\n")
+				__flag = True
+				break
+		if not __flag:
+			os.system(f'mkdir {self.folderName}')
+			print(f"Folder created named [b cyan]{self.folderName}[/]",end="\n")
+		time.sleep(1)
 
 
 
 	def main(self) -> None:
 		print(f"{self.banner}",end="\n")
-		self.deleteEv()
+		self.deleteEv() # clear the folder
 		self.protocolFix()
 		print(f"{self.dictKeys}",end="\n")
 
@@ -189,6 +207,7 @@ class COLLECTOR:
 
 if __name__ == "__main__":
 	c = COLLECTOR()
+	c.checkFolder('temp')
 	c.main()
 	
 

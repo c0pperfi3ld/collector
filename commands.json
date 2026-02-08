@@ -3,6 +3,7 @@
 	"subfinder" : ["subfinder -d URL","subdomains.txt",1,0],
 	"httpx" : ["cat subdomains.txt | httpx -mc 200,301,302,403","active.txt",0,0],
 	"feroxbuster" : ["feroxbuster -u URL -s 200,204,301,302,307,401,403 --no-state --dont-filter", "feroxbuster.txt",0,0],
-	"katana" : ["katana -u URL","katana.txt",0,1],
-	"hakrawler" : ["echo URL | hakrawler -subs","hakrawler.txt",0,1]
+	"katana" : ["cat active.txt | katana","katana.txt",0,1],
+	"hakrawler" : ["cat active.txt | hakrawler","hakrawler.txt",0,1],
+	"urlfinder" : ["cat active.txt | urlfinder","urlfinder.txt",0,1]
 }
