@@ -18,12 +18,11 @@ from collections import OrderedDict, defaultdict
 		rather than doing automated have some flexibility
 			like give it room for customizing the commands, using pyautogui or some other libraries
 
-	⭐ have to combine results
-	🟠 make it class based rather than function
-	✅ go step by step
-	✅ run again
-	✅ try using different command add or remove, paste all in there do what has to be done
+	⚠️ Only recon tools
 	✅ add extra hurestics like pattern found, parameters, admin panel interesting items
+	✅ add other tools
+	✅ omit similar tools
+	✅ if active urls is zero use main as the soucre
 
 
 '''
@@ -153,7 +152,7 @@ class COLLECTOR:
 						else:
 							dups__[f__] = 1
 
-				self.keys__ = list(self.keys__)
+				self.keys__ = list(self.keys__).sort()
 				for kk_ in self.keys__:
 					print(f"{kk_}",end="\n")
 
